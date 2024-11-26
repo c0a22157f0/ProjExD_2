@@ -33,7 +33,6 @@ def game_over(screen: pg.Surface) -> None:
     """
     docstring：ゲームオーバー時に，半透明の黒い画面上に「Game Over」と表示し，泣いているこうかとん画像を貼り付ける関数
     引数：screen
-    戻り値：None
     """
     sikaku = pg.Surface((WIDTH, HEIGHT))
     pg.draw.rect(sikaku, (0, 0, 0), pg.Rect(0, 0, WIDTH, HEIGHT))
@@ -52,6 +51,20 @@ def game_over(screen: pg.Surface) -> None:
     time.sleep(5)
 
 
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    """
+    サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す
+    戻り値：加速度のリストと拡大爆弾のリストのタプル
+    """
+    imgs = []
+    accs = [a for a in range(1, 11)]
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0, 0, 0))
+        imgs.append(bb_img)
+    return imgs, accs
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -69,7 +82,11 @@ def main():
     vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
+    bb_imgs, bb_accs = init_bb_imgs()
     while True:
+        avx = vx*bb_accs[min(tmr//500, 9)]
+        avy = vy*bb_accs[min(tmr//500, 9)]
+        bb_img = bb_imgs[min(tmr//500, 9)]
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
@@ -90,7 +107,7 @@ def main():
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
-        bb_rct.move_ip(vx, vy)  # 爆弾動く
+        bb_rct.move_ip(avx, avy)  # 爆弾動く
         yoko, tate = check_bound(bb_rct)
         if yoko != True:
             vx *= -1
