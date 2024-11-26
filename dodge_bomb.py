@@ -31,7 +31,8 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
 
 def game_over(screen: pg.Surface) -> None:
     """
-    docstring：ゲームオーバー時に，半透明の黒い画面上に「Game Over」と表示し，泣いているこうかとん画像を貼り付ける関数
+    docstring：ゲームオーバー時に，半透明の黒い画面上に
+    「Game Over」と表示し，泣いているこうかとん画像を貼り付ける関数
     引数：screen
     """
     sikaku = pg.Surface((WIDTH, HEIGHT))
